@@ -1,6 +1,10 @@
 <template>
   <v-container>
-    <h1>This is a table view for {{ $route.path }}</h1>
+    <div class="d-flex justify-space-between">
+      <h1>This is a table view for {{ $route.path }}</h1>
+
+      <v-btn :to="`${$route.path}/_`">Add</v-btn>
+    </div>
 
     <custom-table :items="data" :headers="headers" :id-prop="idProp" />
   </v-container>

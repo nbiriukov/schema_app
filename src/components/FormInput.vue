@@ -5,7 +5,7 @@ export default {
   name: "FormInput",
 
   props: {
-    value: { type: [Number, String, Boolean, Object, Array], required: true },
+    value: { type: [Number, String, Boolean, Object, Array], default: null },
     schema: { type: Object, required: true },
   },
 
