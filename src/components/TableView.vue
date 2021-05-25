@@ -6,7 +6,12 @@
       <v-btn :to="`${$route.path}/_`">Add</v-btn>
     </div>
 
-    <custom-table :items="data" :headers="headers" :id-prop="idProp" />
+    <custom-table
+      :items="data"
+      :headers="headers"
+      :id-prop="idProp"
+      @delete="$emit('delete', $event)"
+    />
   </v-container>
 </template>
 

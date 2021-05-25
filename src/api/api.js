@@ -63,3 +63,14 @@ export const putData = async (route, form) => {
     String(item[idProp]) === id ? form : item
   );
 };
+
+export const deleteData = async (route) => {
+  await delay(1000);
+
+  const routeArray = splitRoute(route);
+  const mock = mocks[routeArray[0]];
+
+  const id = routeArray[1];
+  const idProp = getIdProp(mock.schema);
+  mock.data = mock.data.filter((item) => String(item[idProp]) !== id);
+};

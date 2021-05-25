@@ -1,5 +1,6 @@
 <script>
-import { VDataTable, VIcon } from "vuetify/lib";
+import { VDataTable } from "vuetify/lib";
+import CustomTableActions from "./CustomTableActions";
 import CustomTableCell from "./CustomTableCell";
 
 export default {
@@ -28,16 +29,16 @@ export default {
 
   methods: {
     createCell(h, header, schema) {
-      if (header === "actions") {
-        return ({ item }) => {
-          const path = `${this.$route.path}/${item[this.idProp]}`;
-          const icon = h(VIcon, { props: { small: true } }, ["mdi-pencil"]);
+      return ({ item }) => {
+        const id = item[this.idProp];
 
-          return h("router-link", { props: { to: path } }, [icon]);
-        };
-      }
-      return (props) =>
-        h(CustomTableCell, { props: { value: props.item[header], schema } });
+        return header === "actions"
+          ? h(CustomTableActions, {
+              props: { id },
+              on: { delete: () => this.$emit("delete", id) },
+            })
+          : h(CustomTableCell, { props: { value: item[header], schema } });
+      };
     },
   },
 };

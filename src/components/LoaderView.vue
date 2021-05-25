@@ -1,6 +1,6 @@
 <script>
 import { VOverlay, VProgressCircular } from "vuetify/lib";
-import { getData } from "@/api/api";
+import { deleteData, getData } from "@/api/api";
 import FormView from "./FormView";
 import TableView from "./TableView";
 
@@ -25,7 +25,10 @@ export default {
       ]);
 
     const component = Array.isArray(this.data) ? TableView : FormView;
-    return h(component, { props: { data: this.data, schema: this.schema } });
+    return h(component, {
+      props: { data: this.data, schema: this.schema },
+      on: { delete: this.delete },
+    });
   },
 
   created() {
@@ -38,6 +41,13 @@ export default {
       const { data, schema } = await getData(this.$route.path);
       this.data = data;
       this.schema = schema;
+      this.loading = false;
+    },
+
+    async delete(id) {
+      this.loading = true;
+      await deleteData(`${this.$route.path}/${id}`);
+      await this.loadData();
       this.loading = false;
     },
   },
