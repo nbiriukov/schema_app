@@ -1,50 +1,59 @@
 <template>
   <v-app>
-    <v-app-bar app color="primary" dark>
-      <div class="d-flex align-center">
-        <v-img
-          alt="Vuetify Logo"
-          class="shrink mr-2"
-          contain
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-logo-dark.png"
-          transition="scale-transition"
-          width="40"
-        />
+    <navbar :routes="routes" />
 
-        <v-img
-          alt="Vuetify Name"
-          class="shrink mt-1 hidden-sm-and-down"
-          contain
-          min-width="100"
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-name-dark.png"
-          width="100"
-        />
-      </div>
-
-      <v-spacer></v-spacer>
-
-      <v-btn
-        href="https://github.com/vuetifyjs/vuetify/releases/latest"
-        target="_blank"
-        text
-      >
-        <span class="mr-2">Latest Release</span>
-        <v-icon>mdi-open-in-new</v-icon>
-      </v-btn>
+    <v-app-bar app>
+      <v-toolbar-title>Schema App</v-toolbar-title>
     </v-app-bar>
 
     <v-main>
-      <router-view />
+      <router-view :key="$route.path" />
     </v-main>
   </v-app>
 </template>
 
 <script>
+import { getRoutes } from "@/api/api";
+import Navbar from "@/components/Navbar";
+import LoaderView from "@/components/LoaderView";
+
 export default {
   name: "App",
 
+  components: {
+    Navbar,
+  },
+
   data: () => ({
-    //
+    routes: [],
   }),
+
+  created() {
+    this.loadRoutes();
+  },
+
+  methods: {
+    async loadRoutes() {
+      this.routes = await getRoutes();
+      this.addRoutes(this.routes);
+    },
+    addRoutes(routes) {
+      routes.forEach(({ route, items, single }) => {
+        if (items) {
+          this.addRoutes(items);
+        }
+        if (!route) return;
+        this.$router.addRoute({
+          path: route,
+          component: LoaderView,
+        });
+        if (single) return;
+        this.$router.addRoute({
+          path: `${route}/:id`,
+          component: LoaderView,
+        });
+      });
+    },
+  },
 };
 </script>
