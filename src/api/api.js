@@ -1,10 +1,10 @@
+import axios from "axios";
 import delay from "delay";
 import { splitRoute } from "@/services/routeService";
 import { getIdProp } from "@/services/schemaService";
 import dc from "./dc.json";
 import hub from "./hub.json";
 import partner from "./partner.json";
-import routes from "./routes.json";
 import shift from "./shift.json";
 import settings from "./settings.json";
 
@@ -16,15 +16,48 @@ const mocks = {
   settings,
 };
 
-export const getRoutes = async () => {
-  await delay(1000);
-  return routes;
+const request = (query) =>
+  axios.post("http://localhost:8080/query/us", { query });
+
+export const getSchema = async () => {
+  const query = `
+    query getSchema {
+      schema
+    }`;
+
+  const {
+    data: {
+      data: { schema },
+    },
+  } = await request(query);
+
+  return schema;
 };
 
-export const getData = async (route) => {
-  await delay(1000);
+const stringifyParams = (params) => {
+  if (!params) return "";
+  const paramsStr = Object.entries(params)
+    .reduce((result, [prop, value]) => [...result, `${prop}: ${value}`], [])
+    .join(", ");
+  console.log(paramsStr);
+  return `(${paramsStr})`;
+};
 
-  const routeArray = splitRoute(route);
+const getData = async (model, fields, params) => {
+  const query = `
+    query getData {
+      ${model}${stringifyParams(params)} {
+        ${fields.join(" ")}
+      }
+    }`;
+
+  const {
+    data: { data },
+  } = await request(query);
+
+  return data[model];
+
+  /*const routeArray = splitRoute(route);
   const mock = mocks[routeArray[0]];
 
   if (routeArray.length === 2) {
@@ -39,7 +72,18 @@ export const getData = async (route) => {
     return { data: item, schema: mock.schema };
   }
 
-  return mock;
+  return mock;*/
+};
+
+export const getList = (model, fields) => {
+  return getData(model, fields);
+};
+
+export const getItem = async (model, fields, id) => {
+  const params = id ? { id } : null;
+
+  const list = await getData(model, fields, params);
+  return list[0];
 };
 
 export const postData = async (route, form) => {

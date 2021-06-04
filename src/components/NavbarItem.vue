@@ -9,7 +9,7 @@
     </v-list>
   </v-list-group>
 
-  <v-list-item v-else :to="item.route" link>
+  <v-list-item v-else :to="`/${item.model}`" link>
     <v-list-item-title>{{ item.title }} </v-list-item-title>
   </v-list-item>
 </template>

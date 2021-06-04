@@ -1,22 +1,28 @@
 <script>
 import { VOverlay, VProgressCircular } from "vuetify/lib";
-import { deleteData, getData } from "@/api/api";
-import FormView from "./FormView";
+import { deleteData, getList } from "@/api/api";
 import TableView from "./TableView";
 
 export default {
-  name: "LoaderView",
+  name: "ListView",
 
-  components: {
-    FormView,
-    TableView,
+  props: {
+    model: { type: String, required: true },
   },
 
   data: () => ({
     data: [],
-    schema: {},
     loading: false,
   }),
+
+  computed: {
+    schema() {
+      return this.$store.getters.schema(this.model);
+    },
+    fields() {
+      return this.$store.getters.fields(this.model);
+    },
+  },
 
   render(h) {
     if (this.loading)
@@ -24,23 +30,21 @@ export default {
         h(VProgressCircular, { props: { indeterminate: true, size: 64 } }),
       ]);
 
-    const component = Array.isArray(this.data) ? TableView : FormView;
-    return h(component, {
+    return h(TableView, {
       props: { data: this.data, schema: this.schema },
       on: { delete: this.delete },
     });
   },
 
   created() {
+    console.log(this.$route);
     this.loadData();
   },
 
   methods: {
     async loadData() {
       this.loading = true;
-      const { data, schema } = await getData(this.$route.path);
-      this.data = data;
-      this.schema = schema;
+      this.data = await getList(this.model, this.fields);
       this.loading = false;
     },
 
