@@ -16,7 +16,6 @@
 </template>
 
 <script>
-import { getIdProp } from "@/services/schemaService";
 import CustomTable from "./CustomTable";
 
 export default {
@@ -34,14 +33,12 @@ export default {
   computed: {
     headers() {
       return [
-        ...Object.entries(this.schema.properties || []).map(
-          ([value, schema]) => ({
-            text: schema.description,
-            value: value,
-            sortable: schema.sortable !== false,
-            schema,
-          })
-        ),
+        ...this.schema.fields.map((field) => ({
+          text: field.description,
+          value: field.name,
+          sortable: field.sortable !== false,
+          schema: field,
+        })),
         {
           text: "Actions",
           value: "actions",
@@ -50,7 +47,7 @@ export default {
       ];
     },
     idProp() {
-      return getIdProp(this.schema);
+      return this.$store.getters.idProp(this.schema);
     },
   },
 };

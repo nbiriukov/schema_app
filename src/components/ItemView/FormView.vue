@@ -2,10 +2,10 @@
   <v-container>
     <h1>This is a form view for {{ $route.path }}</h1>
     <FormInput
-      v-for="(schema, prop) in schema.properties"
-      :key="prop"
-      :schema="schema"
-      v-model="form[prop]"
+      v-for="field in schema.fields"
+      :key="field.name"
+      :schema="field"
+      v-model="form[field.name]"
     />
 
     <v-btn @click="save">Save</v-btn>

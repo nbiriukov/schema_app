@@ -1,7 +1,6 @@
 import axios from "axios";
 import delay from "delay";
 import { splitRoute } from "@/services/routeService";
-import { getIdProp } from "@/services/schemaService";
 import dc from "./dc.json";
 import hub from "./hub.json";
 import partner from "./partner.json";
@@ -56,23 +55,6 @@ const getData = async (model, fields, params) => {
   } = await request(query);
 
   return data[model];
-
-  /*const routeArray = splitRoute(route);
-  const mock = mocks[routeArray[0]];
-
-  if (routeArray.length === 2) {
-    const id = routeArray[1];
-
-    if (id === "_") {
-      return { schema: mock.schema };
-    }
-
-    const idProp = getIdProp(mock.schema);
-    const item = mock.data.find((item) => String(item[idProp]) === id);
-    return { data: item, schema: mock.schema };
-  }
-
-  return mock;*/
 };
 
 export const getList = (model, fields) => {
@@ -102,7 +84,7 @@ export const putData = async (route, form) => {
   const mock = mocks[routeArray[0]];
 
   const id = routeArray[1];
-  const idProp = getIdProp(mock.schema);
+  const idProp = "id";
   mock.data = mock.data.map((item) =>
     String(item[idProp]) === id ? form : item
   );
@@ -115,6 +97,6 @@ export const deleteData = async (route) => {
   const mock = mocks[routeArray[0]];
 
   const id = routeArray[1];
-  const idProp = getIdProp(mock.schema);
+  const idProp = "id";
   mock.data = mock.data.filter((item) => String(item[idProp]) !== id);
 };

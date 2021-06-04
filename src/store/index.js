@@ -14,7 +14,11 @@ export default new Vuex.Store({
     fields:
       (_, { schema }) =>
       (model) =>
-        Object.keys(schema(model)?.properties),
+        schema(model)?.fields.map(({ name }) => name),
+    idProp:
+      (_, { schema }) =>
+      (model) =>
+        schema(model)?.id || "id",
   },
 
   mutations: {
