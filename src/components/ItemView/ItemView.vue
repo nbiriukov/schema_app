@@ -8,7 +8,7 @@ export default {
 
   props: {
     model: { type: String, required: true },
-    id: { type: Number, default: null },
+    id: { type: String, default: null },
   },
 
   data: () => ({
@@ -37,7 +37,11 @@ export default {
   },
 
   created() {
-    this.loadData();
+    if (this.id === "_") {
+      this.createEmptyData();
+    } else {
+      this.loadData();
+    }
   },
 
   methods: {
@@ -45,6 +49,9 @@ export default {
       this.loading = true;
       this.data = await getItem(this.model, this.fields, this.id);
       this.loading = false;
+    },
+    createEmptyData() {
+      this.data = {};
     },
   },
 };

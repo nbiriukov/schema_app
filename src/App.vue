@@ -65,7 +65,7 @@ export default {
         path,
         component: ItemView,
         props: (route) => ({
-          id: +route.params.id,
+          id: route.params.id,
           model,
         }),
       });
