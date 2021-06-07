@@ -77,7 +77,7 @@ export const getItem = async (model, fields, id) => {
   return list[0];
 };
 
-export const createItem = async (model, fields, item) => {
+export const createItem = async (model, item) => {
   const query = `
     mutation createItem {
       create${upperCaseFirst(model)}(
@@ -85,7 +85,27 @@ export const createItem = async (model, fields, item) => {
           ${formatInput(item)}
         }
       ) {
-        ${fields.join(" ")}
+        id
+      }
+    }`;
+
+  const {
+    data: { data },
+  } = await request(query);
+
+  return data[model];
+};
+
+export const updateItem = async (model, id, item) => {
+  const query = `
+    mutation updateItem {
+      update${upperCaseFirst(model)}(
+        id: ${formatValue(id)}
+        input: {
+          ${formatInput(item)}
+        }
+      ) {
+        id
       }
     }`;
 

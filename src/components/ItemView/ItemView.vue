@@ -1,7 +1,7 @@
 <script>
 import { VOverlay, VProgressCircular } from "vuetify/lib";
-import { getItem, createItem } from "@/api/api";
-import { extractTableRoute } from "@/services/routeService";
+import { getItem, createItem, updateItem } from "@/api/api";
+import { extractTableRoute, newRouteId } from "@/services/routeService";
 import FormView from "./FormView";
 
 export default {
@@ -24,6 +24,9 @@ export default {
     fields() {
       return this.$store.getters.fields(this.model);
     },
+    isNew() {
+      return this.id === newRouteId;
+    },
   },
 
   render(h) {
@@ -39,7 +42,7 @@ export default {
   },
 
   created() {
-    if (this.id === "_") {
+    if (this.isNew) {
       this.createEmptyItem();
     } else {
       this.loadItem();
@@ -56,15 +59,17 @@ export default {
       this.item = {};
     },
     async submit(item) {
-      console.log("submit", item);
+      const enabledValues = Object.fromEntries(
+        Object.entries(item).filter((_, i) => {
+          return !this.schema.fields[i].disabled;
+        })
+      );
 
-      await createItem(this.model, this.fields, item);
-      /*if (isNewRoute(formPath)) {
-        this.$emit("submit");
-        postData(tablePath, this.form);
+      if (this.isNew) {
+        await createItem(this.model, enabledValues);
       } else {
-        putData(formPath, this.form);
-      }*/
+        await updateItem(this.model, item.id, enabledValues);
+      }
 
       const tablePath = extractTableRoute(this.$route.path);
       this.$router.push(tablePath);

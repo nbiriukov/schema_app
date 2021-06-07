@@ -1,5 +1,3 @@
-export const splitRoute = (route) => route.split("/").filter(String);
-
 export const extractTableRoute = (route) =>
   route
     .split("/")
@@ -7,5 +5,3 @@ export const extractTableRoute = (route) =>
     .join("/");
 
 export const newRouteId = "_";
-
-export const isNewRoute = (route) => route.split("/").pop() === newRouteId;
