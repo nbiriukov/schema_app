@@ -3,7 +3,7 @@
     <div class="d-flex justify-space-between">
       <h1>This is a table view for {{ $route.path }}</h1>
 
-      <v-btn :to="`${$route.path}/_`">Add</v-btn>
+      <v-btn :to="`${$route.path}/${newRouteId}`">Add</v-btn>
     </div>
 
     <custom-table
@@ -16,6 +16,7 @@
 </template>
 
 <script>
+import { newRouteId } from "@/services/routeService";
 import CustomTable from "./CustomTable";
 
 export default {
@@ -48,6 +49,9 @@ export default {
     },
     idProp() {
       return this.$store.getters.idProp(this.schema);
+    },
+    newRouteId() {
+      return newRouteId;
     },
   },
 };

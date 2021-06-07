@@ -6,4 +6,6 @@ export const extractTableRoute = (route) =>
     .filter((_, i, arr) => i !== arr.length - 1)
     .join("/");
 
-export const isNewRoute = (route) => route.split("/").pop() === "_";
+export const newRouteId = "_";
+
+export const isNewRoute = (route) => route.split("/").pop() === newRouteId;
