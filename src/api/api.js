@@ -1,20 +1,5 @@
 import axios from "axios";
-import delay from "delay";
 import { upperCaseFirst } from "upper-case-first";
-import { splitRoute } from "@/services/routeService";
-import dc from "./dc.json";
-import hub from "./hub.json";
-import partner from "./partner.json";
-import shift from "./shift.json";
-import settings from "./settings.json";
-
-const mocks = {
-  dc,
-  hub,
-  partner,
-  shift,
-  settings,
-};
 
 const request = (query) =>
   axios.post("http://localhost:8080/query/us", { query });
@@ -116,35 +101,13 @@ export const updateItem = async (model, id, item) => {
   return data[model];
 };
 
-export const postData = async (route, form) => {
-  await delay(1000);
+export const deleteItem = async (model, id) => {
+  const query = `
+    mutation deleteItem {
+      delete${upperCaseFirst(model)}(
+        id: ${formatValue(id)}
+      )
+    }`;
 
-  const routeArray = splitRoute(route);
-  const mock = mocks[routeArray[0]];
-
-  mock.data.push(form);
-};
-
-export const putData = async (route, form) => {
-  await delay(1000);
-
-  const routeArray = splitRoute(route);
-  const mock = mocks[routeArray[0]];
-
-  const id = routeArray[1];
-  const idProp = "id";
-  mock.data = mock.data.map((item) =>
-    String(item[idProp]) === id ? form : item
-  );
-};
-
-export const deleteData = async (route) => {
-  await delay(1000);
-
-  const routeArray = splitRoute(route);
-  const mock = mocks[routeArray[0]];
-
-  const id = routeArray[1];
-  const idProp = "id";
-  mock.data = mock.data.filter((item) => String(item[idProp]) !== id);
+  await request(query);
 };

@@ -1,6 +1,6 @@
 <script>
 import { VOverlay, VProgressCircular } from "vuetify/lib";
-import { deleteData, getList } from "@/api/api";
+import { deleteItem, getList } from "@/api/api";
 import TableView from "./TableView";
 
 export default {
@@ -49,7 +49,7 @@ export default {
 
     async delete(id) {
       this.loading = true;
-      await deleteData(`${this.$route.path}/${id}`);
+      await deleteItem(this.model, id);
       await this.loadData();
       this.loading = false;
     },
