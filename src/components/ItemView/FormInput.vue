@@ -10,7 +10,7 @@ export default {
   },
 
   render(h) {
-    const { type, description: label, enum: items } = this.schema;
+    const { type, description: label, disabled, enum: items } = this.schema;
     const value = this.value;
 
     const fixFormat = (value) => {
@@ -22,17 +22,17 @@ export default {
 
     if (type === "boolean")
       return h(VCheckbox, {
-        props: { inputValue: value, label },
+        props: { inputValue: value, label, disabled },
         on: { change: input },
       });
     if (type === "string" && items) {
       return h(VSelect, {
-        props: { value, label, items },
+        props: { value, label, disabled, items },
         on: { input },
       });
     }
 
-    return h(VTextField, { props: { value, label }, on: { input } });
+    return h(VTextField, { props: { value, label, disabled }, on: { input } });
   },
 };
 </script>
