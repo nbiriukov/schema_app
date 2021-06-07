@@ -1,6 +1,7 @@
 <script>
 import { VOverlay, VProgressCircular } from "vuetify/lib";
-import { getItem } from "@/api/api";
+import { getItem, createItem } from "@/api/api";
+import { extractTableRoute } from "@/services/routeService";
 import FormView from "./FormView";
 
 export default {
@@ -12,7 +13,7 @@ export default {
   },
 
   data: () => ({
-    data: {},
+    item: {},
     loading: false,
   }),
 
@@ -32,26 +33,41 @@ export default {
       ]);
 
     return h(FormView, {
-      props: { data: this.data, schema: this.schema },
+      props: { data: this.item, schema: this.schema },
+      on: { submit: this.submit },
     });
   },
 
   created() {
     if (this.id === "_") {
-      this.createEmptyData();
+      this.createEmptyItem();
     } else {
-      this.loadData();
+      this.loadItem();
     }
   },
 
   methods: {
-    async loadData() {
+    async loadItem() {
       this.loading = true;
-      this.data = await getItem(this.model, this.fields, this.id);
+      this.item = await getItem(this.model, this.fields, this.id);
       this.loading = false;
     },
-    createEmptyData() {
-      this.data = {};
+    createEmptyItem() {
+      this.item = {};
+    },
+    async submit(item) {
+      console.log("submit", item);
+
+      await createItem(this.model, this.fields, item);
+      /*if (isNewRoute(formPath)) {
+        this.$emit("submit");
+        postData(tablePath, this.form);
+      } else {
+        putData(formPath, this.form);
+      }*/
+
+      const tablePath = extractTableRoute(this.$route.path);
+      this.$router.push(tablePath);
     },
   },
 };
